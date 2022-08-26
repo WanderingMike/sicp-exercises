@@ -1,0 +1,17 @@
+#lang racket
+(define (let->combination exps)
+  (cons (make-lambda (extract-variables (bindings exps))(body exps))
+        (extract-values (bindings exps))))
+
+(define (let*? expr) (tagged-list? expr 'let*))
+(define (let*-bindings expr) (cadr expr)) 
+(define (let*-body expr) (caddr expr))
+(define (make-let args body) (cons 'let (cons args body)))
+
+(define (let*->nested-lets expr)
+  (define (unfold-let* args body)
+    (if (null? args)
+        (sequence->exp body)
+        (make-let (list (car args))
+                  (list (unfold-let* (cdr args) body)))))
+  (unfold-let* (let*-bindings expr) (let*-body expr)))

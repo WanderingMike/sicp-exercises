@@ -1,0 +1,8 @@
+#lang sicp
+
+(define (main)
+  (let ((p (read)))
+    (display p)
+    (main)))
+
+	
